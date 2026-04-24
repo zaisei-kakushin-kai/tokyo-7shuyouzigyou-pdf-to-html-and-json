@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>令和７年度 東京都主要事業</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+JP:wght@300;400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS VARIABLES ===== */
+:root {
+  --bg: #0a0c0f;
+  --bg2: #0f1318;
+  --bg3: #141920;
+  --bg4: #1a2030;
+  --border: #1e2a38;
+  --border2: #263347;
+  --amber: #ffb300;
+  --amber-dim: #cc8c00;
+  --amber-glow: rgba(255,179,0,0.12);
+  --amber-glow2: rgba(255,179,0,0.06);
+  --cyan: #00d4ff;
+  --cyan-dim: #0099bb;
+  --red: #ff4455;
+  --green: #00e676;
+  --green-dim: #00b050;
+  --text: #c8d4e0;
+  --text-dim: #6b8099;
+  --text-bright: #e8f0f8;
+  --mono: 'Share Tech Mono', monospace;
+  --sans: 'Noto Sans JP', sans-serif;
+  --display: 'Bebas Neue', sans-serif;
+  --sidebar-w: 260px;
+  --header-h: 52px;
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== SCANLINE OVERLAY ===== */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 1000;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+}
+
+/* ===== HEADER ===== */
+#header {
+  height: var(--header-h);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 20px;
+  flex-shrink: 0;
+  position: relative;
+}
+#header::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--amber) 0%, transparent 60%);
+  opacity: 0.4;
+}
+.header-title {
+  font-family: var(--display);
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: var(--amber);
+  text-shadow: 0 0 20px rgba(255,179,0,0.5);
+  white-space: nowrap;
+}
+.header-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.header-stats {
+  margin-left: auto;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.stat-item {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+.stat-item .val {
+  font-size: 14px;
+  color: var(--amber);
+  font-weight: 500;
+}
+.header-clock {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+/* ===== MAIN LAYOUT ===== */
+#main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ===== SIDEBAR ===== */
+#sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sidebar-header {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+#search-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text-bright);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 10px;
+  outline: none;
+  border-radius: 2px;
+  transition: border-color 0.2s;
+}
+#search-input:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 8px var(--amber-glow);
+}
+#search-input::placeholder { color: var(--text-dim); }
+
+.bureau-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.bureau-list::-webkit-scrollbar { width: 3px; }
+.bureau-list::-webkit-scrollbar-thumb { background: var(--border2); }
+.bureau-list::-webkit-scrollbar-track { background: transparent; }
+
+.bureau-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.bureau-item:hover {
+  background: var(--bg3);
+  border-left-color: var(--amber-dim);
+}
+.bureau-item.active {
+  background: var(--amber-glow2);
+  border-left-color: var(--amber);
+}
+.bureau-name {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.bureau-item.active .bureau-name { color: var(--amber); }
+.bureau-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.bureau-count {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+}
+.bureau-total {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--cyan-dim);
+}
+
+/* ===== CONTENT AREA ===== */
+#content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== TOOLBAR ===== */
+#toolbar {
+  height: 42px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.toolbar-bureau-name {
+  font-family: var(--display);
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--text-bright);
+}
+.toolbar-sep {
+  color: var(--border2);
+  font-size: 18px;
+}
+.toolbar-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.filter-btn {
+  padding: 3px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: all 0.15s;
+  letter-spacing: 1px;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--amber-glow);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+.ml-auto { margin-left: auto; }
+.sort-select {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  outline: none;
+  cursor: pointer;
+  border-radius: 1px;
+}
+
+/* ===== ITEMS LIST ===== */
+#items-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 20px;
+}
+#items-container::-webkit-scrollbar { width: 4px; }
+#items-container::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+#items-container::-webkit-scrollbar-track { background: transparent; }
+
+/* ===== ITEM CARD ===== */
+.item-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  margin-bottom: 6px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+  animation: fadeSlideIn 0.2s ease both;
+}
+.item-card:hover {
+  border-color: var(--border2);
+  box-shadow: 0 0 16px rgba(0,0,0,0.4);
+}
+.item-card.level-2 { margin-left: 20px; border-left: 2px solid var(--border2); }
+.item-card.level-3 { margin-left: 40px; border-left: 2px solid var(--border); }
+.item-card.level-4 { margin-left: 60px; border-left: 2px solid var(--bg4); }
+.item-card.is-new { border-left: 3px solid var(--green); }
+.item-card.is-new.level-2 { border-left: 3px solid var(--green); }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* card header */
+.card-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.card-header:hover { background: var(--bg3); }
+
+.level-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 1px;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+.level-1 .level-badge { background: rgba(255,179,0,0.15); color: var(--amber); border: 1px solid rgba(255,179,0,0.3); }
+.level-2 .level-badge { background: rgba(0,212,255,0.1); color: var(--cyan-dim); border: 1px solid rgba(0,212,255,0.2); }
+.level-3 .level-badge { background: rgba(0,230,118,0.1); color: var(--green-dim); border: 1px solid rgba(0,230,118,0.2); }
+.level-4 .level-badge { background: rgba(255,68,85,0.1); color: var(--red); border: 1px solid rgba(255,68,85,0.2); }
+
+.new-badge {
+  font-family: var(--mono);
+  font-size: 8px;
+  padding: 1px 5px;
+  background: rgba(0,230,118,0.15);
+  color: var(--green);
+  border: 1px solid rgba(0,230,118,0.3);
+  border-radius: 1px;
+  flex-shrink: 0;
+  letter-spacing: 1px;
+}
+
+.item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-bright);
+  flex: 1;
+  line-height: 1.4;
+}
+.item-card.level-1 .item-name { font-weight: 700; }
+
+.budget-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.budget-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--amber);
+  white-space: nowrap;
+  min-width: 80px;
+  text-align: right;
+}
+.budget-val.no-budget { color: var(--text-dim); font-size: 11px; }
+.diff-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: right;
+}
+.diff-badge.positive { color: var(--green); }
+.diff-badge.negative { color: var(--red); }
+.diff-badge.zero { color: var(--text-dim); }
+
+.expand-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  width: 16px;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.expand-btn.open { transform: rotate(90deg); color: var(--amber); }
+
+/* card body */
+.card-body {
+  display: none;
+  padding: 0 14px 12px;
+  border-top: 1px solid var(--border);
+}
+.card-body.open { display: block; }
+
+/* budget bar */
+.budget-bar-wrap {
+  margin: 10px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.budget-bar-bg {
+  flex: 1;
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.budget-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+.budget-bar-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* budget grid */
+.budget-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.budget-cell {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 1px;
+}
+.budget-cell-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  margin-bottom: 3px;
+}
+.budget-cell-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-bright);
+}
+.budget-cell-val.diff-pos { color: var(--green); }
+.budget-cell-val.diff-neg { color: var(--red); }
+.budget-cell-unit {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text-dim);
+  margin-left: 2px;
+}
+
+/* supplementary */
+.suppl-section { margin-bottom: 10px; }
+.suppl-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.suppl-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+.suppl-row:last-child { border-bottom: none; }
+.suppl-type {
+  background: var(--bg4);
+  color: var(--cyan-dim);
+  padding: 1px 6px;
+  border-radius: 1px;
+  font-size: 9px;
+  min-width: 50px;
+  text-align: center;
+}
+.suppl-nums {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+  color: var(--text-dim);
+}
+.suppl-raw { color: var(--text-dim); }
+
+/* sub_items */
+.sub-items-section { margin-bottom: 8px; }
+.sub-items-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.sub-items-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.sub-item-chip {
+  font-size: 11px;
+  color: var(--text);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 1px;
+}
+
+/* notes */
+.notes-section {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--bg3);
+  border-left: 2px solid var(--border2);
+  padding: 6px 10px;
+  line-height: 1.6;
+  border-radius: 0 1px 1px 0;
+}
+
+/* ===== RIGHT PANEL ===== */
+#right-panel {
+  width: 300px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.panel-header {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.panel-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.panel-body::-webkit-scrollbar { width: 3px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border2); }
+
+/* bureau overview chart */
+.overview-section { margin-bottom: 20px; }
+.overview-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.bureau-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.bureau-bar-row:hover { opacity: 0.8; }
+.bureau-bar-name {
+  font-size: 10px;
+  color: var(--text-dim);
+  width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: var(--sans);
+}
+.bureau-bar-row.active-row .bureau-bar-name { color: var(--amber); }
+.bureau-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg4);
+  border-radius: 1px;
+  overflow: hidden;
+  position: relative;
+}
+.bureau-bar-fill {
+  height: 100%;
+  background: var(--amber-dim);
+  border-radius: 1px;
+  transition: width 0.4s ease;
+}
+.bureau-bar-row.active-row .bureau-bar-fill { background: var(--amber); }
+.bureau-bar-val {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* pie-like summary */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.summary-cell {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: 1px;
+}
+.summary-cell-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.summary-cell-val {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--amber);
+}
+.summary-cell-sub {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* new items list */
+.new-items-section {}
+.new-item-row {
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.new-item-row:hover .new-item-name { color: var(--amber); }
+.new-item-bureau {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+.new-item-name {
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.4;
+  transition: color 0.15s;
+}
+.new-item-budget {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--green);
+  margin-top: 1px;
+}
+
+/* ===== LOADING ===== */
+#loading {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  gap: 20px;
+}
+.loading-title {
+  font-family: var(--display);
+  font-size: 32px;
+  letter-spacing: 6px;
+  color: var(--amber);
+  text-shadow: 0 0 30px rgba(255,179,0,0.6);
+}
+.loading-bar-bg {
+  width: 300px;
+  height: 2px;
+  background: var(--border);
+}
+.loading-bar-fill {
+  height: 100%;
+  background: var(--amber);
+  animation: loadingAnim 1.5s ease infinite;
+  transform-origin: left;
+}
+@keyframes loadingAnim {
+  0%   { width: 0%; }
+  70%  { width: 90%; }
+  100% { width: 100%; }
+}
+.loading-text {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+/* ===== SCROLLBAR GLOBAL ===== */
+* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="loading-title">TOKYO BUDGET</div>
+  <div class="loading-bar-bg"><div class="loading-bar-fill"></div></div>
+  <div class="loading-text">LOADING DATA...</div>
+</div>
+
+<!-- HEADER -->
+<div id="header">
+  <div>
+    <div class="header-title">令和７年度　東京都主要事業</div>
+    <div class="header-sub">TOKYO METROPOLITAN GOVERNMENT — FY2025 KEY PROJECTS</div>
+  </div>
+  <div class="header-stats">
+    <div class="stat-item">
+      <span class="val" id="stat-bureaus">—</span>
+      <span>BUREAUS</span>
+    </div>
+    <div class="stat-item">
+      <span class="val" id="stat-items">—</span>
+      <span>ITEMS</span>
+    </div>
+    <div class="stat-item">
+      <span class="val" id="stat-new">—</span>
+      <span>NEW</span>
+    </div>
+    <div class="stat-item">
+      <span class="val" id="stat-total">—</span>
+      <span>L1 TOTAL ¥M</span>
+    </div>
+    <div class="header-clock" id="clock">--:--:--</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-label">BUREAU / ACCOUNT</div>
+      <input type="text" id="search-input" placeholder="事業名 / 局名を検索...">
+    </div>
+    <div class="bureau-list" id="bureau-list"></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+    <div id="toolbar">
+      <span class="toolbar-bureau-name" id="toolbar-bureau">—</span>
+      <span class="toolbar-sep">|</span>
+      <span class="toolbar-count" id="toolbar-count"></span>
+      <div style="display:flex;gap:6px;margin-left:16px;">
+        <button class="filter-btn active" data-filter="all">ALL</button>
+        <button class="filter-btn" data-filter="new">NEW ONLY</button>
+        <button class="filter-btn" data-filter="l1">L1 ONLY</button>
+      </div>
+      <div class="ml-auto" style="display:flex;gap:8px;align-items:center;">
+        <select class="sort-select" id="sort-select">
+          <option value="default">— 並び順 —</option>
+          <option value="budget-desc">予算（高）</option>
+          <option value="budget-asc">予算（低）</option>
+          <option value="diff-desc">増分（大）</option>
+          <option value="diff-asc">増分（小）</option>
+        </select>
+      </div>
+    </div>
+    <div id="items-container"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="right-panel">
+    <div class="panel-header">BUREAU OVERVIEW</div>
+    <div class="panel-body" id="panel-body"></div>
+  </div>
+
+</div>
+
+<script>
+// ===== DATA & STATE =====
+const JSON_URL = 'https://raw.githubusercontent.com/zaisei-kakushin-kai/tokyo-7shuyouzigyou-pdf-to-html-and-json/refs/heads/main/shuyou_jigyou_r7.json';
+
+let allItems = [];
+let meta = {};
+let currentBureau = null;
+let currentFilter = 'all';
+let searchQuery = '';
+let sortMode = 'default';
+
+const fmt = n => n == null ? '—' : n.toLocaleString('ja-JP');
+const fmtM = n => n == null ? '—' : (Math.abs(n) >= 1000 ? (n/1000).toFixed(1)+'B' : n.toLocaleString()+'M');
+
+// ===== CLOCK =====
+function updateClock() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('ja-JP');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ===== FETCH =====
+async function loadData() {
+  try {
+    const res = await fetch(JSON_URL);
+    const data = await res.json();
+    allItems = data.items;
+    meta = data._meta;
+    initApp();
+  } catch(e) {
+    document.getElementById('loading').innerHTML = `
+      <div class="loading-title" style="color:var(--red)">LOAD ERROR</div>
+      <div class="loading-text">${e.message}</div>`;
+  }
+}
+
+// ===== INIT =====
+function initApp() {
+  // header stats
+  const bureauList = [...new Set(allItems.map(i=>i.bureau))];
+  const newCount = allItems.filter(i=>i.is_new).length;
+  const l1Total = allItems.filter(i=>i.level===1 && i.budget)
+    .reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
+  
+  document.getElementById('stat-bureaus').textContent = bureauList.length;
+  document.getElementById('stat-items').textContent = allItems.length.toLocaleString();
+  document.getElementById('stat-new').textContent = newCount;
+  document.getElementById('stat-total').textContent = (l1Total/1000).toFixed(0)+'B';
+
+  buildSidebar();
+  buildRightPanel();
+  
+  // select first bureau
+  const firstBureau = allItems[0]?.bureau;
+  if(firstBureau) selectBureau(firstBureau);
+
+  document.getElementById('loading').style.display = 'none';
+}
+
+// ===== SIDEBAR =====
+function buildSidebar() {
+  const bureauOrder = [...new Set(allItems.map(i=>i.bureau))];
+  const container = document.getElementById('bureau-list');
+  container.innerHTML = '';
+
+  bureauOrder.forEach(bureau => {
+    const bItems = allItems.filter(i=>i.bureau===bureau);
+    const l1Items = bItems.filter(i=>i.level===1 && i.budget);
+    const total = l1Items.reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
+    
+    const el = document.createElement('div');
+    el.className = 'bureau-item';
+    el.dataset.bureau = bureau;
+    el.innerHTML = `
+      <div class="bureau-name">${bureau}</div>
+      <div class="bureau-meta">
+        <span class="bureau-count">${bItems.length}件</span>
+        <span class="bureau-total">¥${fmtM(total)}</span>
+      </div>`;
+    el.addEventListener('click', ()=>selectBureau(bureau));
+    container.appendChild(el);
+  });
+}
+
+function selectBureau(bureau) {
+  currentBureau = bureau;
+  document.querySelectorAll('.bureau-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.bureau===bureau);
+  });
+  document.querySelectorAll('.bureau-bar-row').forEach(el=>{
+    el.classList.toggle('active-row', el.dataset.bureau===bureau);
+  });
+  // scroll into view
+  const active = document.querySelector('.bureau-item.active');
+  if(active) active.scrollIntoView({block:'nearest'});
+  
+  document.getElementById('toolbar-bureau').textContent = bureau;
+  renderItems();
+}
+
+// ===== RIGHT PANEL =====
+function buildRightPanel() {
+  const bureauOrder = [...new Set(allItems.map(i=>i.bureau))];
+  const totals = {};
+  bureauOrder.forEach(b=>{
+    totals[b] = allItems.filter(i=>i.bureau===b&&i.level===1&&i.budget)
+      .reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
+  });
+  const maxTotal = Math.max(...Object.values(totals));
+  const newItems = allItems.filter(i=>i.is_new&&i.budget)
+    .sort((a,b)=>(b.budget.fy7_million_yen||0)-(a.budget.fy7_million_yen||0))
+    .slice(0,15);
+
+  const panel = document.getElementById('panel-body');
+  
+  // summary grid
+  const totalAll = Object.values(totals).reduce((s,v)=>s+v,0);
+  const newTotal = allItems.filter(i=>i.is_new&&i.budget).reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
+  panel.innerHTML = `
+    <div class="summary-grid">
+      <div class="summary-cell">
+        <div class="summary-cell-label">L1 TOTAL</div>
+        <div class="summary-cell-val">${(totalAll/1000).toFixed(0)}</div>
+        <div class="summary-cell-sub">十億円 (B)</div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-cell-label">NEW PROJECTS</div>
+        <div class="summary-cell-val" style="color:var(--green)">${allItems.filter(i=>i.is_new).length}</div>
+        <div class="summary-cell-sub">件 / ¥${(newTotal/1000).toFixed(0)}B</div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-cell-label">BUREAUS</div>
+        <div class="summary-cell-val">${[...new Set(allItems.map(i=>i.bureau))].length}</div>
+        <div class="summary-cell-sub">局・会計</div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-cell-label">TOTAL ITEMS</div>
+        <div class="summary-cell-val" style="color:var(--cyan)">${allItems.length}</div>
+        <div class="summary-cell-sub">全階層</div>
+      </div>
+    </div>`;
+
+  // bureau bars
+  let barsHTML = `<div class="overview-section"><div class="overview-label">BUREAU BUDGET RANKING (L1)</div>`;
+  const sortedBureaus = [...bureauOrder].sort((a,b)=>totals[b]-totals[a]);
+  sortedBureaus.forEach(b=>{
+    const pct = maxTotal > 0 ? (totals[b]/maxTotal*100).toFixed(1) : 0;
+    barsHTML += `
+      <div class="bureau-bar-row" data-bureau="${b}" onclick="selectBureau('${b}')">
+        <span class="bureau-bar-name" title="${b}">${b}</span>
+        <div class="bureau-bar-track">
+          <div class="bureau-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <span class="bureau-bar-val">${fmtM(totals[b])}</span>
+      </div>`;
+  });
+  barsHTML += `</div>`;
+
+  // new items
+  let newHTML = `<div class="new-items-section"><div class="overview-label">新規事業 TOP 15 (by budget)</div>`;
+  newItems.forEach(it=>{
+    newHTML += `
+      <div class="new-item-row" onclick="selectBureau('${it.bureau}')">
+        <div class="new-item-bureau">${it.bureau}</div>
+        <div class="new-item-name">${it.name}</div>
+        <div class="new-item-budget">¥${fmt(it.budget.fy7_million_yen)}M</div>
+      </div>`;
+  });
+  newHTML += `</div>`;
+
+  panel.innerHTML += barsHTML + newHTML;
+}
+
+// ===== RENDER ITEMS =====
+function renderItems() {
+  const container = document.getElementById('items-container');
+  let items = allItems.filter(i=>i.bureau===currentBureau);
+
+  // search filter
+  if(searchQuery) {
+    const q = searchQuery.toLowerCase();
+    items = allItems.filter(i=>
+      i.name.toLowerCase().includes(q) ||
+      i.bureau.toLowerCase().includes(q) ||
+      i.sub_items.some(s=>s.toLowerCase().includes(q))
+    );
+    document.getElementById('toolbar-bureau').textContent = `検索: "${searchQuery}"`;
+  }
+
+  // level/new filter
+  if(currentFilter==='new') items = items.filter(i=>i.is_new);
+  if(currentFilter==='l1') items = items.filter(i=>i.level===1);
+
+  // sort
+  if(sortMode==='budget-desc') items = [...items].sort((a,b)=>(b.budget?.fy7_million_yen||0)-(a.budget?.fy7_million_yen||0));
+  if(sortMode==='budget-asc') items = [...items].sort((a,b)=>(a.budget?.fy7_million_yen||0)-(b.budget?.fy7_million_yen||0));
+  if(sortMode==='diff-desc') items = [...items].sort((a,b)=>(b.budget?.diff_million_yen||0)-(a.budget?.diff_million_yen||0));
+  if(sortMode==='diff-asc') items = [...items].sort((a,b)=>(a.budget?.diff_million_yen||0)-(b.budget?.diff_million_yen||0));
+
+  document.getElementById('toolbar-count').textContent = `${items.length} items`;
+
+  if(items.length===0) {
+    container.innerHTML = '<div class="empty-state">NO DATA FOUND</div>';
+    return;
+  }
+
+  // max budget for bar
+  const maxBudget = Math.max(...items.filter(i=>i.budget).map(i=>i.budget.fy7_million_yen||0),1);
+
+  container.innerHTML = '';
+  items.forEach((item, idx) => {
+    const card = buildCard(item, maxBudget, idx);
+    container.appendChild(card);
+  });
+}
+
+function buildCard(item, maxBudget, idx) {
+  const div = document.createElement('div');
+  div.className = `item-card level-${item.level}${item.is_new?' is-new':''}`;
+  div.style.animationDelay = `${Math.min(idx*15,200)}ms`;
+
+  const b = item.budget;
+  const fy7 = b?.fy7_million_yen ?? null;
+  const fy6 = b?.fy6_million_yen ?? null;
+  const diff = b?.diff_million_yen ?? null;
+  const pct = fy7 != null && maxBudget > 0 ? (fy7/maxBudget*100).toFixed(1) : 0;
+  const diffClass = diff == null ? 'zero' : diff > 0 ? 'positive' : diff < 0 ? 'negative' : 'zero';
+  const diffStr = diff == null ? '—' : diff > 0 ? `▲${fmt(diff)}` : diff < 0 ? `▼${fmt(Math.abs(diff))}` : '±0';
+
+  const hasContent = (b != null) || item.supplementary.length || item.sub_items.length || item.notes;
+  
+  div.innerHTML = `
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="level-badge">${item.number_label}</span>
+      ${item.is_new ? '<span class="new-badge">NEW</span>' : ''}
+      <span class="item-name">${item.name}</span>
+      <div class="budget-section">
+        ${fy7 != null
+          ? `<span class="budget-val">¥${fmt(fy7)}M</span>`
+          : `<span class="budget-val no-budget">—</span>`}
+        <span class="diff-badge ${diffClass}">${diffStr}</span>
+      </div>
+      ${hasContent ? `<span class="expand-btn">▶</span>` : '<span style="width:16px"></span>'}
+    </div>
+    <div class="card-body">
+      ${b ? `
+        <div class="budget-bar-wrap">
+          <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:${pct}%"></div></div>
+          <span class="budget-bar-label">${pct}%</span>
+        </div>
+        <div class="budget-grid">
+          <div class="budget-cell">
+            <div class="budget-cell-label">R7年度</div>
+            <div class="budget-cell-val">${fmt(fy7)}<span class="budget-cell-unit">百万円</span></div>
+          </div>
+          <div class="budget-cell">
+            <div class="budget-cell-label">R6年度</div>
+            <div class="budget-cell-val">${fmt(fy6)}<span class="budget-cell-unit">百万円</span></div>
+          </div>
+          <div class="budget-cell">
+            <div class="budget-cell-label">増(△)減</div>
+            <div class="budget-cell-val ${diff>0?'diff-pos':diff<0?'diff-neg':''}">${diffStr}<span class="budget-cell-unit">百万円</span></div>
+          </div>
+        </div>` : ''}
+      ${item.supplementary.length ? `
+        <div class="suppl-section">
+          <div class="suppl-label">SUPPLEMENTARY</div>
+          ${item.supplementary.map(s=>`
+            <div class="suppl-row">
+              <span class="suppl-type">${s.type}</span>
+              ${s.raw
+                ? `<span class="suppl-raw">${s.raw}</span>`
+                : `<span class="suppl-nums">
+                    <span>R7: ${fmt(s.fy7)}</span>
+                    <span>R6: ${fmt(s.fy6)}</span>
+                    <span class="${s.diff>0?'diff-pos':s.diff<0?'diff-neg':''}">△: ${fmt(s.diff)}</span>
+                    <span style="color:var(--text-dim)">${s.unit||''}</span>
+                  </span>`}
+            </div>`).join('')}
+        </div>` : ''}
+      ${item.sub_items.length ? `
+        <div class="sub-items-section">
+          <div class="sub-items-label">PROJECTS (${item.sub_items.length})</div>
+          <div class="sub-items-grid">
+            ${item.sub_items.map(s=>`<span class="sub-item-chip">${s}</span>`).join('')}
+          </div>
+        </div>` : ''}
+      ${item.notes ? `
+        <div class="notes-section">${item.notes}</div>` : ''}
+    </div>`;
+
+  return div;
+}
+
+function toggleCard(header) {
+  const body = header.nextElementSibling;
+  const btn = header.querySelector('.expand-btn');
+  if(!body || !body.classList.contains('card-body')) return;
+  const open = body.classList.toggle('open');
+  if(btn) btn.classList.toggle('open', open);
+}
+
+// ===== FILTERS =====
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderItems();
+  });
+});
+
+document.getElementById('sort-select').addEventListener('change', e=>{
+  sortMode = e.target.value;
+  renderItems();
+});
+
+// ===== SEARCH =====
+let searchTimer;
+document.getElementById('search-input').addEventListener('input', e=>{
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>{
+    searchQuery = e.target.value.trim();
+    if(searchQuery) {
+      currentBureau = null;
+      document.querySelectorAll('.bureau-item').forEach(el=>el.classList.remove('active'));
+    } else {
+      // restore
+      if(!currentBureau) {
+        const first = allItems[0]?.bureau;
+        if(first) selectBureau(first);
+        return;
+      }
+    }
+    renderItems();
+  }, 200);
+});
+
+// ===== START =====
+loadData();
+</script>
+</body>
+</html>
