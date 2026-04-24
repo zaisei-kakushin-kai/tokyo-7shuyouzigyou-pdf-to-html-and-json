@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+JP:wght@300;400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-/* ===== CSS VARIABLES ===== */
 :root {
   --bg: #0a0c0f;
   --bg2: #0f1318;
@@ -23,6 +22,11 @@
   --cyan: #00d4ff;
   --cyan-dim: #0099bb;
   --red: #ff4455;
+  --red-dim: #cc2233;
+  --red-glow: rgba(255,68,85,0.10);
+  --orange: #ff8c00;
+  --orange-glow: rgba(255,140,0,0.10);
+  --yellow: #ffd600;
   --green: #00e676;
   --green-dim: #00b050;
   --text: #c8d4e0;
@@ -33,705 +37,227 @@
   --display: 'Bebas Neue', sans-serif;
   --sidebar-w: 260px;
   --header-h: 52px;
+  /* priority colors */
+  --p-low:    #ff4455;
+  --p-medlow: #ff8c00;
+  --p-med:    #ffd600;
+  --p-normal: #1e2a38;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;z-index:1000;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);}
 
-/* ===== RESET ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 14px; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
+/* HEADER */
+#header{height:var(--header-h);background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 20px;gap:20px;flex-shrink:0;position:relative;}
+#header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--amber) 0%,transparent 60%);opacity:0.4;}
+.header-title{font-family:var(--display);font-size:22px;letter-spacing:3px;color:var(--amber);text-shadow:0 0 20px rgba(255,179,0,0.5);white-space:nowrap;}
+.header-sub{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:1px;}
+.header-stats{margin-left:auto;display:flex;gap:24px;align-items:center;}
+.stat-item{font-family:var(--mono);font-size:10px;color:var(--text-dim);display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+.stat-item .val{font-size:14px;color:var(--amber);font-weight:500;}
+.header-clock{font-family:var(--mono);font-size:12px;color:var(--text-dim);letter-spacing:1px;}
 
-/* ===== SCANLINE OVERLAY ===== */
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 1000;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.03) 2px,
-    rgba(0,0,0,0.03) 4px
-  );
-}
+/* MAIN */
+#main{display:flex;flex:1;overflow:hidden;}
 
-/* ===== HEADER ===== */
-#header {
-  height: var(--header-h);
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border2);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 20px;
-  flex-shrink: 0;
-  position: relative;
-}
-#header::after {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, var(--amber) 0%, transparent 60%);
-  opacity: 0.4;
-}
-.header-title {
-  font-family: var(--display);
-  font-size: 22px;
-  letter-spacing: 3px;
-  color: var(--amber);
-  text-shadow: 0 0 20px rgba(255,179,0,0.5);
-  white-space: nowrap;
-}
-.header-sub {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-}
-.header-stats {
-  margin-left: auto;
-  display: flex;
-  gap: 24px;
-  align-items: center;
-}
-.stat-item {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1px;
-}
-.stat-item .val {
-  font-size: 14px;
-  color: var(--amber);
-  font-weight: 500;
-}
-.header-clock {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-}
+/* SIDEBAR */
+#sidebar{width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;}
+.sidebar-header{padding:12px 16px 8px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sidebar-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+#search-input{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text-bright);font-family:var(--mono);font-size:12px;padding:6px 10px;outline:none;border-radius:2px;transition:border-color .2s;}
+#search-input:focus{border-color:var(--amber);box-shadow:0 0 8px var(--amber-glow);}
+#search-input::placeholder{color:var(--text-dim);}
+.bureau-list{flex:1;overflow-y:auto;padding:4px 0;}
+.bureau-list::-webkit-scrollbar{width:3px;}
+.bureau-list::-webkit-scrollbar-thumb{background:var(--border2);}
+.bureau-item{padding:8px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .15s;display:flex;flex-direction:column;gap:3px;}
+.bureau-item:hover{background:var(--bg3);border-left-color:var(--amber-dim);}
+.bureau-item.active{background:var(--amber-glow2);border-left-color:var(--amber);}
+.bureau-name{font-size:12px;color:var(--text);font-weight:500;}
+.bureau-item.active .bureau-name{color:var(--amber);}
+.bureau-meta{display:flex;gap:8px;align-items:center;}
+.bureau-count{font-family:var(--mono);font-size:9px;color:var(--text-dim);}
+.bureau-total{font-family:var(--mono);font-size:9px;color:var(--cyan-dim);}
+/* priority dots in sidebar */
+.bureau-pdots{display:flex;gap:3px;margin-left:auto;}
+.pdot{width:6px;height:6px;border-radius:50%;}
+.pdot-low{background:var(--p-low);}
+.pdot-medlow{background:var(--p-medlow);}
 
-/* ===== MAIN LAYOUT ===== */
-#main {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
+/* CONTENT */
+#content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
-/* ===== SIDEBAR ===== */
-#sidebar {
-  width: var(--sidebar-w);
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.sidebar-header {
-  padding: 12px 16px 8px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.sidebar-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-#search-input {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text-bright);
-  font-family: var(--mono);
-  font-size: 12px;
-  padding: 6px 10px;
-  outline: none;
-  border-radius: 2px;
-  transition: border-color 0.2s;
-}
-#search-input:focus {
-  border-color: var(--amber);
-  box-shadow: 0 0 8px var(--amber-glow);
-}
-#search-input::placeholder { color: var(--text-dim); }
+/* TOOLBAR */
+#toolbar{min-height:42px;height:auto;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:8px;flex-shrink:0;flex-wrap:wrap;}
+.toolbar-bureau-name{font-family:var(--display);font-size:18px;letter-spacing:2px;color:var(--text-bright);}
+.toolbar-sep{color:var(--border2);font-size:18px;}
+.toolbar-count{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+.filter-btn{padding:3px 10px;background:var(--bg3);border:1px solid var(--border2);color:var(--text-dim);font-family:var(--mono);font-size:10px;cursor:pointer;border-radius:1px;transition:all .15s;letter-spacing:1px;white-space:nowrap;}
+.filter-btn:hover,.filter-btn.active{background:var(--amber-glow);border-color:var(--amber);color:var(--amber);}
+/* priority filter buttons */
+.filter-btn[data-filter="low"]{border-color:rgba(255,68,85,.3);color:var(--red);}
+.filter-btn[data-filter="low"].active{background:rgba(255,68,85,.12);border-color:var(--red);}
+.filter-btn[data-filter="medium-low"]{border-color:rgba(255,140,0,.3);color:var(--orange);}
+.filter-btn[data-filter="medium-low"].active{background:rgba(255,140,0,.12);border-color:var(--orange);}
+.filter-btn[data-filter="new"]{border-color:rgba(0,230,118,.3);color:var(--green);}
+.filter-btn[data-filter="new"].active{background:rgba(0,230,118,.10);border-color:var(--green);}
+.ml-auto{margin-left:auto;}
+.sort-select{background:var(--bg3);border:1px solid var(--border2);color:var(--text-dim);font-family:var(--mono);font-size:10px;padding:3px 8px;outline:none;cursor:pointer;border-radius:1px;}
 
-.bureau-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 4px 0;
-}
-.bureau-list::-webkit-scrollbar { width: 3px; }
-.bureau-list::-webkit-scrollbar-thumb { background: var(--border2); }
-.bureau-list::-webkit-scrollbar-track { background: transparent; }
+/* ITEMS */
+#items-container{flex:1;overflow-y:auto;padding:10px 16px;}
+#items-container::-webkit-scrollbar{width:4px;}
+#items-container::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 
-.bureau-item {
-  padding: 8px 16px;
-  cursor: pointer;
-  border-left: 2px solid transparent;
-  transition: all 0.15s;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.bureau-item:hover {
-  background: var(--bg3);
-  border-left-color: var(--amber-dim);
-}
-.bureau-item.active {
-  background: var(--amber-glow2);
-  border-left-color: var(--amber);
-}
-.bureau-name {
-  font-size: 12px;
-  color: var(--text);
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
-.bureau-item.active .bureau-name { color: var(--amber); }
-.bureau-meta {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.bureau-count {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-}
-.bureau-total {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--cyan-dim);
-}
+/* ITEM CARD */
+.item-card{background:var(--bg2);border:1px solid var(--border);border-radius:2px;margin-bottom:5px;transition:border-color .15s,box-shadow .15s;overflow:hidden;animation:fadeSlideIn .18s ease both;}
+.item-card:hover{border-color:var(--border2);box-shadow:0 0 14px rgba(0,0,0,.4);}
+.item-card.level-2{margin-left:18px;border-left:2px solid var(--border2);}
+.item-card.level-3{margin-left:36px;border-left:2px solid var(--border);}
+.item-card.level-4{margin-left:54px;}
+.item-card.is-new{border-left:3px solid var(--green);}
 
-/* ===== CONTENT AREA ===== */
-#content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* priority border overrides (left edge) */
+.item-card.priority-low      {border-left:3px solid var(--p-low)!important;}
+.item-card.priority-medium-low{border-left:3px solid var(--p-medlow)!important;}
+.item-card.priority-medium   {border-left:3px solid var(--p-med)!important;}
 
-/* ===== TOOLBAR ===== */
-#toolbar {
-  height: 42px;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 12px;
-  flex-shrink: 0;
-}
-.toolbar-bureau-name {
-  font-family: var(--display);
-  font-size: 18px;
-  letter-spacing: 2px;
-  color: var(--text-bright);
-}
-.toolbar-sep {
-  color: var(--border2);
-  font-size: 18px;
-}
-.toolbar-count {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-}
-.filter-btn {
-  padding: 3px 10px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text-dim);
-  font-family: var(--mono);
-  font-size: 10px;
-  cursor: pointer;
-  border-radius: 1px;
-  transition: all 0.15s;
-  letter-spacing: 1px;
-}
-.filter-btn:hover, .filter-btn.active {
-  background: var(--amber-glow);
-  border-color: var(--amber);
-  color: var(--amber);
-}
-.ml-auto { margin-left: auto; }
-.sort-select {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text-dim);
-  font-family: var(--mono);
-  font-size: 10px;
-  padding: 3px 8px;
-  outline: none;
-  cursor: pointer;
-  border-radius: 1px;
-}
+/* priority tint on card bg */
+.item-card.priority-low      {background:linear-gradient(90deg,rgba(255,68,85,.04) 0%,var(--bg2) 60%);}
+.item-card.priority-medium-low{background:linear-gradient(90deg,rgba(255,140,0,.04) 0%,var(--bg2) 60%);}
+.item-card.priority-medium   {background:linear-gradient(90deg,rgba(255,214,0,.02) 0%,var(--bg2) 60%);}
 
-/* ===== ITEMS LIST ===== */
-#items-container {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px 20px;
-}
-#items-container::-webkit-scrollbar { width: 4px; }
-#items-container::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-#items-container::-webkit-scrollbar-track { background: transparent; }
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 
-/* ===== ITEM CARD ===== */
-.item-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  margin-bottom: 6px;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  overflow: hidden;
-  animation: fadeSlideIn 0.2s ease both;
-}
-.item-card:hover {
-  border-color: var(--border2);
-  box-shadow: 0 0 16px rgba(0,0,0,0.4);
-}
-.item-card.level-2 { margin-left: 20px; border-left: 2px solid var(--border2); }
-.item-card.level-3 { margin-left: 40px; border-left: 2px solid var(--border); }
-.item-card.level-4 { margin-left: 60px; border-left: 2px solid var(--bg4); }
-.item-card.is-new { border-left: 3px solid var(--green); }
-.item-card.is-new.level-2 { border-left: 3px solid var(--green); }
+.card-header{display:flex;align-items:center;padding:9px 12px;gap:8px;cursor:pointer;user-select:none;}
+.card-header:hover{background:rgba(255,255,255,.02);}
 
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+.level-badge{font-family:var(--mono);font-size:9px;padding:1px 5px;border-radius:1px;flex-shrink:0;letter-spacing:.5px;}
+.level-1 .level-badge{background:rgba(255,179,0,.15);color:var(--amber);border:1px solid rgba(255,179,0,.3);}
+.level-2 .level-badge{background:rgba(0,212,255,.1);color:var(--cyan-dim);border:1px solid rgba(0,212,255,.2);}
+.level-3 .level-badge{background:rgba(0,230,118,.1);color:var(--green-dim);border:1px solid rgba(0,230,118,.2);}
+.level-4 .level-badge{background:rgba(255,68,85,.1);color:var(--red);border:1px solid rgba(255,68,85,.2);}
 
-/* card header */
-.card-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
-  gap: 10px;
-  cursor: pointer;
-  user-select: none;
-}
-.card-header:hover { background: var(--bg3); }
+.new-badge{font-family:var(--mono);font-size:8px;padding:1px 5px;background:rgba(0,230,118,.15);color:var(--green);border:1px solid rgba(0,230,118,.3);border-radius:1px;flex-shrink:0;letter-spacing:1px;}
 
-.level-badge {
-  font-family: var(--mono);
-  font-size: 9px;
-  padding: 1px 5px;
-  border-radius: 1px;
-  flex-shrink: 0;
-  letter-spacing: 0.5px;
-}
-.level-1 .level-badge { background: rgba(255,179,0,0.15); color: var(--amber); border: 1px solid rgba(255,179,0,0.3); }
-.level-2 .level-badge { background: rgba(0,212,255,0.1); color: var(--cyan-dim); border: 1px solid rgba(0,212,255,0.2); }
-.level-3 .level-badge { background: rgba(0,230,118,0.1); color: var(--green-dim); border: 1px solid rgba(0,230,118,0.2); }
-.level-4 .level-badge { background: rgba(255,68,85,0.1); color: var(--red); border: 1px solid rgba(255,68,85,0.2); }
+/* ── priority badge ── */
+.priority-badge{font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:1px;flex-shrink:0;letter-spacing:.5px;white-space:nowrap;}
+.pb-low      {background:rgba(255,68,85,.18);color:var(--p-low);border:1px solid rgba(255,68,85,.35);}
+.pb-medium-low{background:rgba(255,140,0,.18);color:var(--p-medlow);border:1px solid rgba(255,140,0,.35);}
+.pb-medium   {background:rgba(255,214,0,.12);color:var(--p-med);border:1px solid rgba(255,214,0,.25);}
 
-.new-badge {
-  font-family: var(--mono);
-  font-size: 8px;
-  padding: 1px 5px;
-  background: rgba(0,230,118,0.15);
-  color: var(--green);
-  border: 1px solid rgba(0,230,118,0.3);
-  border-radius: 1px;
-  flex-shrink: 0;
-  letter-spacing: 1px;
-}
+.item-name{font-size:13px;font-weight:500;color:var(--text-bright);flex:1;line-height:1.4;}
+.item-card.level-1 .item-name{font-weight:700;}
 
-.item-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-bright);
-  flex: 1;
-  line-height: 1.4;
-}
-.item-card.level-1 .item-name { font-weight: 700; }
+/* dim low-priority item name */
+.item-card.priority-low       .item-name{color:var(--text-dim);}
+.item-card.priority-medium-low .item-name{color:var(--text);}
 
-.budget-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-.budget-val {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--amber);
-  white-space: nowrap;
-  min-width: 80px;
-  text-align: right;
-}
-.budget-val.no-budget { color: var(--text-dim); font-size: 11px; }
-.diff-badge {
-  font-family: var(--mono);
-  font-size: 10px;
-  white-space: nowrap;
-  min-width: 60px;
-  text-align: right;
-}
-.diff-badge.positive { color: var(--green); }
-.diff-badge.negative { color: var(--red); }
-.diff-badge.zero { color: var(--text-dim); }
+.budget-section{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0;}
+.budget-val{font-family:var(--mono);font-size:13px;color:var(--amber);white-space:nowrap;min-width:72px;text-align:right;}
+.budget-val.no-budget{color:var(--text-dim);font-size:11px;}
+.diff-badge{font-family:var(--mono);font-size:10px;white-space:nowrap;min-width:58px;text-align:right;}
+.diff-badge.positive{color:var(--green);}
+.diff-badge.negative{color:var(--red);}
+.diff-badge.zero{color:var(--text-dim);}
+.expand-btn{font-family:var(--mono);font-size:10px;color:var(--text-dim);width:14px;flex-shrink:0;transition:transform .2s;}
+.expand-btn.open{transform:rotate(90deg);color:var(--amber);}
 
-.expand-btn {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  width: 16px;
-  flex-shrink: 0;
-  transition: transform 0.2s;
-}
-.expand-btn.open { transform: rotate(90deg); color: var(--amber); }
+.card-body{display:none;padding:0 12px 10px;border-top:1px solid var(--border);}
+.card-body.open{display:block;}
 
-/* card body */
-.card-body {
-  display: none;
-  padding: 0 14px 12px;
-  border-top: 1px solid var(--border);
-}
-.card-body.open { display: block; }
+/* priority explanation box */
+.priority-explain{background:var(--bg3);border:1px solid var(--border2);border-radius:1px;padding:6px 10px;margin:8px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.priority-explain-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px;}
+.flag-chip{font-size:10px;font-family:var(--mono);padding:1px 7px;border-radius:1px;background:var(--bg4);border:1px solid var(--border2);color:var(--text-dim);}
+.flag-chip.削減,.flag-chip.微減,.flag-chip.大幅削減{color:var(--red);border-color:rgba(255,68,85,.3);}
+.flag-chip.広報・イベント系{color:var(--orange);border-color:rgba(255,140,0,.3);}
+.flag-chip.補助・交付系{color:var(--cyan-dim);border-color:rgba(0,212,255,.25);}
+.flag-chip.増減ゼロ{color:var(--text-dim);}
+.flag-chip.小規模\(<50M\){color:var(--text-dim);}
 
-/* budget bar */
-.budget-bar-wrap {
-  margin: 10px 0 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.budget-bar-bg {
-  flex: 1;
-  height: 4px;
-  background: var(--bg4);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.budget-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--amber-dim), var(--amber));
-  border-radius: 2px;
-  transition: width 0.5s ease;
-}
-.budget-bar-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  white-space: nowrap;
-}
+.budget-bar-wrap{margin:8px 0 6px;display:flex;align-items:center;gap:8px;}
+.budget-bar-bg{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.budget-bar-fill{height:100%;background:linear-gradient(90deg,var(--amber-dim),var(--amber));border-radius:2px;transition:width .5s ease;}
+.budget-bar-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);white-space:nowrap;}
+.budget-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:8px;}
+.budget-cell{background:var(--bg3);border:1px solid var(--border);padding:5px 9px;border-radius:1px;}
+.budget-cell-label{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:1px;margin-bottom:2px;}
+.budget-cell-val{font-family:var(--mono);font-size:13px;color:var(--text-bright);}
+.budget-cell-val.diff-pos{color:var(--green);}
+.budget-cell-val.diff-neg{color:var(--red);}
+.budget-cell-unit{font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-left:2px;}
+.suppl-section{margin-bottom:8px;}
+.suppl-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-bottom:5px;text-transform:uppercase;}
+.suppl-row{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:10px;}
+.suppl-row:last-child{border-bottom:none;}
+.suppl-type{background:var(--bg4);color:var(--cyan-dim);padding:1px 6px;border-radius:1px;font-size:9px;min-width:48px;text-align:center;}
+.suppl-nums{display:flex;gap:10px;margin-left:auto;color:var(--text-dim);}
+.suppl-raw{color:var(--text-dim);}
+.sub-items-section{margin-bottom:6px;}
+.sub-items-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-bottom:5px;text-transform:uppercase;}
+.sub-items-grid{display:flex;flex-wrap:wrap;gap:4px;}
+.sub-item-chip{font-size:11px;color:var(--text);background:var(--bg3);border:1px solid var(--border);padding:2px 8px;border-radius:1px;}
+.notes-section{font-size:11px;color:var(--text-dim);background:var(--bg3);border-left:2px solid var(--border2);padding:5px 9px;line-height:1.6;border-radius:0 1px 1px 0;}
 
-/* budget grid */
-.budget-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.budget-cell {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 6px 10px;
-  border-radius: 1px;
-}
-.budget-cell-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-  margin-bottom: 3px;
-}
-.budget-cell-val {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--text-bright);
-}
-.budget-cell-val.diff-pos { color: var(--green); }
-.budget-cell-val.diff-neg { color: var(--red); }
-.budget-cell-unit {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: var(--text-dim);
-  margin-left: 2px;
-}
+/* RIGHT PANEL */
+#right-panel{width:290px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;}
+.panel-header{padding:10px 14px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;flex-shrink:0;display:flex;gap:8px;align-items:center;}
+.panel-tab{padding:3px 8px;border-radius:1px;cursor:pointer;transition:all .15s;border:1px solid transparent;}
+.panel-tab.active{background:var(--amber-glow);border-color:var(--amber);color:var(--amber);}
+.panel-body{flex:1;overflow-y:auto;padding:10px 14px;}
+.panel-body::-webkit-scrollbar{width:3px;}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border2);}
 
-/* supplementary */
-.suppl-section { margin-bottom: 10px; }
-.suppl-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
-.suppl-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 0;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--mono);
-  font-size: 10px;
-}
-.suppl-row:last-child { border-bottom: none; }
-.suppl-type {
-  background: var(--bg4);
-  color: var(--cyan-dim);
-  padding: 1px 6px;
-  border-radius: 1px;
-  font-size: 9px;
-  min-width: 50px;
-  text-align: center;
-}
-.suppl-nums {
-  display: flex;
-  gap: 12px;
-  margin-left: auto;
-  color: var(--text-dim);
-}
-.suppl-raw { color: var(--text-dim); }
+/* overview */
+.overview-section{margin-bottom:18px;}
+.overview-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px;margin-bottom:8px;}
+.bureau-bar-row{display:flex;align-items:center;gap:5px;margin-bottom:4px;cursor:pointer;transition:opacity .15s;}
+.bureau-bar-row:hover{opacity:.8;}
+.bureau-bar-name{font-size:10px;color:var(--text-dim);width:82px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;font-family:var(--sans);}
+.bureau-bar-row.active-row .bureau-bar-name{color:var(--amber);}
+.bureau-bar-track{flex:1;height:5px;background:var(--bg4);border-radius:1px;overflow:hidden;}
+.bureau-bar-fill{height:100%;background:var(--amber-dim);border-radius:1px;transition:width .4s ease;}
+.bureau-bar-row.active-row .bureau-bar-fill{background:var(--amber);}
+.bureau-bar-val{font-family:var(--mono);font-size:9px;color:var(--text-dim);width:38px;text-align:right;flex-shrink:0;}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;}
+.summary-cell{background:var(--bg3);border:1px solid var(--border);padding:9px;border-radius:1px;}
+.summary-cell-label{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:1px;margin-bottom:3px;}
+.summary-cell-val{font-family:var(--mono);font-size:15px;color:var(--amber);}
+.summary-cell-sub{font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:1px;}
 
-/* sub_items */
-.sub-items-section { margin-bottom: 8px; }
-.sub-items-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
-.sub-items-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-.sub-item-chip {
-  font-size: 11px;
-  color: var(--text);
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 2px 8px;
-  border-radius: 1px;
-}
+/* priority panel */
+.priority-stat-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.priority-stat-row:hover{background:var(--bg3);margin:0 -14px;padding:7px 14px;}
+.priority-stat-row:last-child{border-bottom:none;}
+.pstat-color{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.pstat-label{font-size:12px;color:var(--text);flex:1;}
+.pstat-count{font-family:var(--mono);font-size:12px;color:var(--text-dim);}
+.pstat-bar-wrap{width:60px;height:5px;background:var(--bg4);border-radius:1px;overflow:hidden;}
+.pstat-bar{height:100%;border-radius:1px;}
+/* reason breakdown */
+.reason-row{display:flex;align-items:center;gap:6px;padding:4px 0;font-family:var(--mono);font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);}
+.reason-row:last-child{border-bottom:none;}
+.reason-tag{padding:1px 6px;border-radius:1px;font-size:9px;}
+.reason-count{margin-left:auto;color:var(--text-bright);}
+/* new items */
+.new-item-row{padding:5px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.new-item-row:hover .new-item-name{color:var(--amber);}
+.new-item-bureau{font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-bottom:1px;}
+.new-item-name{font-size:11px;color:var(--text);line-height:1.4;transition:color .15s;}
+.new-item-budget{font-family:var(--mono);font-size:9px;color:var(--green);margin-top:1px;}
 
-/* notes */
-.notes-section {
-  font-size: 11px;
-  color: var(--text-dim);
-  background: var(--bg3);
-  border-left: 2px solid var(--border2);
-  padding: 6px 10px;
-  line-height: 1.6;
-  border-radius: 0 1px 1px 0;
-}
-
-/* ===== RIGHT PANEL ===== */
-#right-panel {
-  width: 300px;
-  background: var(--bg2);
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.panel-header {
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-.panel-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
-.panel-body::-webkit-scrollbar { width: 3px; }
-.panel-body::-webkit-scrollbar-thumb { background: var(--border2); }
-
-/* bureau overview chart */
-.overview-section { margin-bottom: 20px; }
-.overview-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-}
-.bureau-bar-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.bureau-bar-row:hover { opacity: 0.8; }
-.bureau-bar-name {
-  font-size: 10px;
-  color: var(--text-dim);
-  width: 90px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex-shrink: 0;
-  font-family: var(--sans);
-}
-.bureau-bar-row.active-row .bureau-bar-name { color: var(--amber); }
-.bureau-bar-track {
-  flex: 1;
-  height: 6px;
-  background: var(--bg4);
-  border-radius: 1px;
-  overflow: hidden;
-  position: relative;
-}
-.bureau-bar-fill {
-  height: 100%;
-  background: var(--amber-dim);
-  border-radius: 1px;
-  transition: width 0.4s ease;
-}
-.bureau-bar-row.active-row .bureau-bar-fill { background: var(--amber); }
-.bureau-bar-val {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  width: 40px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-/* pie-like summary */
-.summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.summary-cell {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 10px;
-  border-radius: 1px;
-}
-.summary-cell-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-}
-.summary-cell-val {
-  font-family: var(--mono);
-  font-size: 16px;
-  color: var(--amber);
-}
-.summary-cell-sub {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: var(--text-dim);
-  margin-top: 2px;
-}
-
-/* new items list */
-.new-items-section {}
-.new-item-row {
-  padding: 5px 0;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-}
-.new-item-row:hover .new-item-name { color: var(--amber); }
-.new-item-bureau {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: var(--text-dim);
-  margin-bottom: 2px;
-}
-.new-item-name {
-  font-size: 11px;
-  color: var(--text);
-  line-height: 1.4;
-  transition: color 0.15s;
-}
-.new-item-budget {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--green);
-  margin-top: 1px;
-}
-
-/* ===== LOADING ===== */
-#loading {
-  position: fixed; inset: 0;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  gap: 20px;
-}
-.loading-title {
-  font-family: var(--display);
-  font-size: 32px;
-  letter-spacing: 6px;
-  color: var(--amber);
-  text-shadow: 0 0 30px rgba(255,179,0,0.6);
-}
-.loading-bar-bg {
-  width: 300px;
-  height: 2px;
-  background: var(--border);
-}
-.loading-bar-fill {
-  height: 100%;
-  background: var(--amber);
-  animation: loadingAnim 1.5s ease infinite;
-  transform-origin: left;
-}
-@keyframes loadingAnim {
-  0%   { width: 0%; }
-  70%  { width: 90%; }
-  100% { width: 100%; }
-}
-.loading-text {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  animation: blink 1s step-end infinite;
-}
-@keyframes blink { 50% { opacity: 0; } }
-
-/* ===== EMPTY STATE ===== */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-dim);
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 2px;
-}
-
-/* ===== SCROLLBAR GLOBAL ===== */
-* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:20px;}
+.loading-title{font-family:var(--display);font-size:32px;letter-spacing:6px;color:var(--amber);text-shadow:0 0 30px rgba(255,179,0,.6);}
+.loading-bar-bg{width:300px;height:2px;background:var(--border);}
+.loading-bar-fill{height:100%;background:var(--amber);animation:loadAnim 1.5s ease infinite;}
+@keyframes loadAnim{0%{width:0%}70%{width:90%}100%{width:100%}}
+.loading-text{font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:2px;animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0}}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-dim);font-family:var(--mono);font-size:12px;letter-spacing:2px;}
+*{scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
 </style>
 </head>
 <body>
@@ -742,79 +268,69 @@ body::before {
   <div class="loading-text">LOADING DATA...</div>
 </div>
 
-<!-- HEADER -->
 <div id="header">
   <div>
     <div class="header-title">令和７年度　東京都主要事業</div>
     <div class="header-sub">TOKYO METROPOLITAN GOVERNMENT — FY2025 KEY PROJECTS</div>
   </div>
   <div class="header-stats">
-    <div class="stat-item">
-      <span class="val" id="stat-bureaus">—</span>
-      <span>BUREAUS</span>
-    </div>
-    <div class="stat-item">
-      <span class="val" id="stat-items">—</span>
-      <span>ITEMS</span>
-    </div>
-    <div class="stat-item">
-      <span class="val" id="stat-new">—</span>
-      <span>NEW</span>
-    </div>
-    <div class="stat-item">
-      <span class="val" id="stat-total">—</span>
-      <span>L1 TOTAL ¥M</span>
-    </div>
+    <div class="stat-item"><span class="val" id="stat-bureaus">—</span><span>BUREAUS</span></div>
+    <div class="stat-item"><span class="val" id="stat-items">—</span><span>ITEMS</span></div>
+    <div class="stat-item"><span class="val" id="stat-new">—</span><span>NEW</span></div>
+    <div class="stat-item"><span class="val" id="stat-low" style="color:var(--red)">—</span><span>LOW-PRI</span></div>
+    <div class="stat-item"><span class="val" id="stat-total">—</span><span>L1 TOTAL</span></div>
     <div class="header-clock" id="clock">--:--:--</div>
   </div>
 </div>
 
-<!-- MAIN -->
 <div id="main">
-
-  <!-- SIDEBAR -->
   <div id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-label">BUREAU / ACCOUNT</div>
-      <input type="text" id="search-input" placeholder="事業名 / 局名を検索...">
+      <input type="text" id="search-input" placeholder="事業名・局名を検索...">
     </div>
     <div class="bureau-list" id="bureau-list"></div>
   </div>
 
-  <!-- CONTENT -->
   <div id="content">
     <div id="toolbar">
       <span class="toolbar-bureau-name" id="toolbar-bureau">—</span>
       <span class="toolbar-sep">|</span>
       <span class="toolbar-count" id="toolbar-count"></span>
-      <div style="display:flex;gap:6px;margin-left:16px;">
+      <div style="display:flex;gap:5px;margin-left:12px;flex-wrap:wrap;">
         <button class="filter-btn active" data-filter="all">ALL</button>
-        <button class="filter-btn" data-filter="new">NEW ONLY</button>
-        <button class="filter-btn" data-filter="l1">L1 ONLY</button>
+        <button class="filter-btn" data-filter="low">LOW ●</button>
+        <button class="filter-btn" data-filter="medium-low">MED-LOW ●</button>
+        <button class="filter-btn" data-filter="medium">MED ●</button>
+        <button class="filter-btn" data-filter="new">NEW ★</button>
+        <button class="filter-btn" data-filter="l1">L1</button>
       </div>
-      <div class="ml-auto" style="display:flex;gap:8px;align-items:center;">
+      <div class="ml-auto" style="display:flex;gap:7px;align-items:center;">
         <select class="sort-select" id="sort-select">
-          <option value="default">— 並び順 —</option>
+          <option value="default">並び順</option>
+          <option value="priority-asc">優先度（低→高）</option>
+          <option value="priority-desc">優先度（高→低）</option>
           <option value="budget-desc">予算（高）</option>
           <option value="budget-asc">予算（低）</option>
-          <option value="diff-desc">増分（大）</option>
-          <option value="diff-asc">増分（小）</option>
+          <option value="diff-asc">削減（大）</option>
+          <option value="diff-desc">増加（大）</option>
         </select>
       </div>
     </div>
     <div id="items-container"></div>
   </div>
 
-  <!-- RIGHT PANEL -->
   <div id="right-panel">
-    <div class="panel-header">BUREAU OVERVIEW</div>
+    <div class="panel-header">
+      <span class="panel-tab active" data-tab="overview" onclick="switchTab(this)">OVERVIEW</span>
+      <span class="panel-tab" data-tab="priority" onclick="switchTab(this)">PRIORITY</span>
+      <span class="panel-tab" data-tab="new" onclick="switchTab(this)">NEW</span>
+    </div>
     <div class="panel-body" id="panel-body"></div>
   </div>
-
 </div>
 
 <script>
-// ===== DATA & STATE =====
 const JSON_URL = 'https://raw.githubusercontent.com/zaisei-kakushin-kai/tokyo-7shuyouzigyou-pdf-to-html-and-json/refs/heads/main/shuyou_jigyou_r7.json';
 
 let allItems = [];
@@ -823,335 +339,383 @@ let currentBureau = null;
 let currentFilter = 'all';
 let searchQuery = '';
 let sortMode = 'default';
+let currentTab = 'overview';
+
+/* ── scoring ── */
+const KW_SUBSIDY = ['補助','助成','交付金','負担金','貸付','繰出','出資','基金'];
+const KW_PR = ['広報','ＰＲ','PR','フェスタ','イベント','啓発','普及','祭','発信','プロモーション',
+               'シンポジウム','セミナー','フォーラム','キャンペーン','大会','コンクール','表彰','顕彰'];
+
+function scoreItem(i) {
+  const flags = [];
+  let score = 0;
+  const b = i.budget || {};
+  const diff = b.diff_million_yen || 0;
+  const fy7  = b.fy7_million_yen  || 0;
+  const name = i.name;
+
+  if (diff < 0) {
+    if (diff <= -500)      { score += 3; flags.push('大幅削減'); }
+    else if (diff <= -100) { score += 2; flags.push('削減'); }
+    else                   { score += 1; flags.push('微減'); }
+  }
+  if (diff === 0 && fy7 > 0 && !i.is_new) { score += 1; flags.push('増減ゼロ'); }
+  if (KW_SUBSIDY.some(k => name.includes(k))) { score += 1; flags.push('補助・交付系'); }
+  if (KW_PR.some(k => name.includes(k)))      { score += 2; flags.push('広報・イベント系'); }
+  if (fy7 > 0 && fy7 < 50)                   { score += 1; flags.push('小規模(<50M)'); }
+
+  let label = 'normal';
+  if      (score >= 4) label = 'low';
+  else if (score >= 2) label = 'medium-low';
+  else if (score === 1) label = 'medium';
+
+  return { score, flags, label };
+}
 
 const fmt = n => n == null ? '—' : n.toLocaleString('ja-JP');
 const fmtM = n => n == null ? '—' : (Math.abs(n) >= 1000 ? (n/1000).toFixed(1)+'B' : n.toLocaleString()+'M');
 
-// ===== CLOCK =====
-function updateClock() {
-  document.getElementById('clock').textContent = new Date().toLocaleTimeString('ja-JP');
-}
-setInterval(updateClock, 1000);
-updateClock();
+function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ja-JP'); }
+setInterval(updateClock, 1000); updateClock();
 
-// ===== FETCH =====
 async function loadData() {
   try {
     const res = await fetch(JSON_URL);
     const data = await res.json();
     allItems = data.items;
     meta = data._meta;
+    // attach scores
+    allItems.forEach(i => {
+      const {score, flags, label} = scoreItem(i);
+      i._score = score; i._flags = flags; i._label = label;
+    });
     initApp();
   } catch(e) {
-    document.getElementById('loading').innerHTML = `
-      <div class="loading-title" style="color:var(--red)">LOAD ERROR</div>
-      <div class="loading-text">${e.message}</div>`;
+    document.getElementById('loading').innerHTML =
+      `<div class="loading-title" style="color:var(--red)">LOAD ERROR</div><div class="loading-text">${e.message}</div>`;
   }
 }
 
-// ===== INIT =====
 function initApp() {
-  // header stats
-  const bureauList = [...new Set(allItems.map(i=>i.bureau))];
+  const bureaus = [...new Set(allItems.map(i=>i.bureau))];
   const newCount = allItems.filter(i=>i.is_new).length;
-  const l1Total = allItems.filter(i=>i.level===1 && i.budget)
-    .reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
-  
-  document.getElementById('stat-bureaus').textContent = bureauList.length;
-  document.getElementById('stat-items').textContent = allItems.length.toLocaleString();
-  document.getElementById('stat-new').textContent = newCount;
-  document.getElementById('stat-total').textContent = (l1Total/1000).toFixed(0)+'B';
+  const lowCount = allItems.filter(i=>i.level===1 && i._label==='low').length
+                 + allItems.filter(i=>i.level===1 && i._label==='medium-low').length;
+  const l1Total  = allItems.filter(i=>i.level===1&&i.budget).reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
+
+  document.getElementById('stat-bureaus').textContent = bureaus.length;
+  document.getElementById('stat-items').textContent   = allItems.length.toLocaleString();
+  document.getElementById('stat-new').textContent     = newCount;
+  document.getElementById('stat-low').textContent     = lowCount;
+  document.getElementById('stat-total').textContent   = '¥'+(l1Total/1000).toFixed(0)+'B';
 
   buildSidebar();
   buildRightPanel();
-  
-  // select first bureau
-  const firstBureau = allItems[0]?.bureau;
-  if(firstBureau) selectBureau(firstBureau);
-
+  if (allItems[0]) selectBureau(allItems[0].bureau);
   document.getElementById('loading').style.display = 'none';
 }
 
-// ===== SIDEBAR =====
+/* ── sidebar ── */
 function buildSidebar() {
-  const bureauOrder = [...new Set(allItems.map(i=>i.bureau))];
+  const bureaus = [...new Set(allItems.map(i=>i.bureau))];
   const container = document.getElementById('bureau-list');
   container.innerHTML = '';
-
-  bureauOrder.forEach(bureau => {
-    const bItems = allItems.filter(i=>i.bureau===bureau);
-    const l1Items = bItems.filter(i=>i.level===1 && i.budget);
-    const total = l1Items.reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
-    
+  bureaus.forEach(b => {
+    const bItems = allItems.filter(i=>i.bureau===b);
+    const l1 = bItems.filter(i=>i.level===1&&i.budget);
+    const total = l1.reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
+    const lowN   = bItems.filter(i=>i.level===1&&i._label==='low').length;
+    const medlowN= bItems.filter(i=>i.level===1&&i._label==='medium-low').length;
+    const dots = (lowN    ? `<span class="pdot pdot-low" title="LOW ${lowN}件"></span>`.repeat(Math.min(lowN,3)) : '')
+               + (medlowN ? `<span class="pdot pdot-medlow" title="MED-LOW ${medlowN}件"></span>`.repeat(Math.min(medlowN,3)) : '');
     const el = document.createElement('div');
-    el.className = 'bureau-item';
-    el.dataset.bureau = bureau;
+    el.className = 'bureau-item'; el.dataset.bureau = b;
     el.innerHTML = `
-      <div class="bureau-name">${bureau}</div>
+      <div class="bureau-name">${b}</div>
       <div class="bureau-meta">
         <span class="bureau-count">${bItems.length}件</span>
         <span class="bureau-total">¥${fmtM(total)}</span>
+        <span class="bureau-pdots">${dots}</span>
       </div>`;
-    el.addEventListener('click', ()=>selectBureau(bureau));
+    el.addEventListener('click', () => selectBureau(b));
     container.appendChild(el);
   });
 }
 
-function selectBureau(bureau) {
-  currentBureau = bureau;
-  document.querySelectorAll('.bureau-item').forEach(el=>{
-    el.classList.toggle('active', el.dataset.bureau===bureau);
-  });
-  document.querySelectorAll('.bureau-bar-row').forEach(el=>{
-    el.classList.toggle('active-row', el.dataset.bureau===bureau);
-  });
-  // scroll into view
+function selectBureau(b) {
+  currentBureau = b;
+  document.querySelectorAll('.bureau-item').forEach(el=>el.classList.toggle('active',el.dataset.bureau===b));
+  document.querySelectorAll('.bureau-bar-row').forEach(el=>el.classList.toggle('active-row',el.dataset.bureau===b));
   const active = document.querySelector('.bureau-item.active');
-  if(active) active.scrollIntoView({block:'nearest'});
-  
-  document.getElementById('toolbar-bureau').textContent = bureau;
+  if (active) active.scrollIntoView({block:'nearest'});
+  document.getElementById('toolbar-bureau').textContent = b;
   renderItems();
 }
 
-// ===== RIGHT PANEL =====
-function buildRightPanel() {
-  const bureauOrder = [...new Set(allItems.map(i=>i.bureau))];
-  const totals = {};
-  bureauOrder.forEach(b=>{
-    totals[b] = allItems.filter(i=>i.bureau===b&&i.level===1&&i.budget)
-      .reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
-  });
-  const maxTotal = Math.max(...Object.values(totals));
-  const newItems = allItems.filter(i=>i.is_new&&i.budget)
-    .sort((a,b)=>(b.budget.fy7_million_yen||0)-(a.budget.fy7_million_yen||0))
-    .slice(0,15);
-
-  const panel = document.getElementById('panel-body');
-  
-  // summary grid
-  const totalAll = Object.values(totals).reduce((s,v)=>s+v,0);
-  const newTotal = allItems.filter(i=>i.is_new&&i.budget).reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
-  panel.innerHTML = `
-    <div class="summary-grid">
-      <div class="summary-cell">
-        <div class="summary-cell-label">L1 TOTAL</div>
-        <div class="summary-cell-val">${(totalAll/1000).toFixed(0)}</div>
-        <div class="summary-cell-sub">十億円 (B)</div>
-      </div>
-      <div class="summary-cell">
-        <div class="summary-cell-label">NEW PROJECTS</div>
-        <div class="summary-cell-val" style="color:var(--green)">${allItems.filter(i=>i.is_new).length}</div>
-        <div class="summary-cell-sub">件 / ¥${(newTotal/1000).toFixed(0)}B</div>
-      </div>
-      <div class="summary-cell">
-        <div class="summary-cell-label">BUREAUS</div>
-        <div class="summary-cell-val">${[...new Set(allItems.map(i=>i.bureau))].length}</div>
-        <div class="summary-cell-sub">局・会計</div>
-      </div>
-      <div class="summary-cell">
-        <div class="summary-cell-label">TOTAL ITEMS</div>
-        <div class="summary-cell-val" style="color:var(--cyan)">${allItems.length}</div>
-        <div class="summary-cell-sub">全階層</div>
-      </div>
-    </div>`;
-
-  // bureau bars
-  let barsHTML = `<div class="overview-section"><div class="overview-label">BUREAU BUDGET RANKING (L1)</div>`;
-  const sortedBureaus = [...bureauOrder].sort((a,b)=>totals[b]-totals[a]);
-  sortedBureaus.forEach(b=>{
-    const pct = maxTotal > 0 ? (totals[b]/maxTotal*100).toFixed(1) : 0;
-    barsHTML += `
-      <div class="bureau-bar-row" data-bureau="${b}" onclick="selectBureau('${b}')">
-        <span class="bureau-bar-name" title="${b}">${b}</span>
-        <div class="bureau-bar-track">
-          <div class="bureau-bar-fill" style="width:${pct}%"></div>
-        </div>
-        <span class="bureau-bar-val">${fmtM(totals[b])}</span>
-      </div>`;
-  });
-  barsHTML += `</div>`;
-
-  // new items
-  let newHTML = `<div class="new-items-section"><div class="overview-label">新規事業 TOP 15 (by budget)</div>`;
-  newItems.forEach(it=>{
-    newHTML += `
-      <div class="new-item-row" onclick="selectBureau('${it.bureau}')">
-        <div class="new-item-bureau">${it.bureau}</div>
-        <div class="new-item-name">${it.name}</div>
-        <div class="new-item-budget">¥${fmt(it.budget.fy7_million_yen)}M</div>
-      </div>`;
-  });
-  newHTML += `</div>`;
-
-  panel.innerHTML += barsHTML + newHTML;
+/* ── right panel ── */
+function switchTab(tab) {
+  document.querySelectorAll('.panel-tab').forEach(t=>t.classList.toggle('active',t===tab));
+  currentTab = tab.dataset.tab;
+  buildRightPanel();
 }
 
-// ===== RENDER ITEMS =====
+function buildRightPanel() {
+  const panel = document.getElementById('panel-body');
+  if (currentTab === 'overview')  panel.innerHTML = buildOverviewHTML();
+  if (currentTab === 'priority')  panel.innerHTML = buildPriorityHTML();
+  if (currentTab === 'new')       panel.innerHTML = buildNewHTML();
+}
+
+function buildOverviewHTML() {
+  const bureaus = [...new Set(allItems.map(i=>i.bureau))];
+  const totals = {};
+  bureaus.forEach(b=>{totals[b]=allItems.filter(i=>i.bureau===b&&i.level===1&&i.budget).reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);});
+  const maxT = Math.max(...Object.values(totals));
+  const totalAll = Object.values(totals).reduce((s,v)=>s+v,0);
+  const newTotal = allItems.filter(i=>i.is_new&&i.budget).reduce((s,i)=>s+(i.budget.fy7_million_yen||0),0);
+  let h = `<div class="summary-grid">
+    <div class="summary-cell"><div class="summary-cell-label">L1 TOTAL</div><div class="summary-cell-val">${(totalAll/1000).toFixed(0)}</div><div class="summary-cell-sub">十億円(B)</div></div>
+    <div class="summary-cell"><div class="summary-cell-label">NEW</div><div class="summary-cell-val" style="color:var(--green)">${allItems.filter(i=>i.is_new).length}</div><div class="summary-cell-sub">¥${(newTotal/1000).toFixed(0)}B</div></div>
+    <div class="summary-cell"><div class="summary-cell-label">BUREAUS</div><div class="summary-cell-val">${bureaus.length}</div><div class="summary-cell-sub">局・会計</div></div>
+    <div class="summary-cell"><div class="summary-cell-label">ALL ITEMS</div><div class="summary-cell-val" style="color:var(--cyan)">${allItems.length}</div><div class="summary-cell-sub">全階層</div></div>
+  </div><div class="overview-section"><div class="overview-label">BUDGET RANKING (L1)</div>`;
+  [...bureaus].sort((a,b)=>totals[b]-totals[a]).forEach(b=>{
+    const pct = maxT>0?(totals[b]/maxT*100).toFixed(1):0;
+    h+=`<div class="bureau-bar-row" data-bureau="${b}" onclick="selectBureau('${b}')">
+      <span class="bureau-bar-name" title="${b}">${b}</span>
+      <div class="bureau-bar-track"><div class="bureau-bar-fill" style="width:${pct}%"></div></div>
+      <span class="bureau-bar-val">${fmtM(totals[b])}</span>
+    </div>`;
+  });
+  return h+'</div>';
+}
+
+function buildPriorityHTML() {
+  const l1 = allItems.filter(i=>i.level===1);
+  const groups = {
+    'low':        {label:'低優先度 (HIGH RISK)', color:'var(--p-low)',    items:l1.filter(i=>i._label==='low')},
+    'medium-low': {label:'やや低 (MEDIUM-LOW)',  color:'var(--p-medlow)', items:l1.filter(i=>i._label==='medium-low')},
+    'medium':     {label:'中程度 (MEDIUM)',       color:'var(--p-med)',    items:l1.filter(i=>i._label==='medium')},
+    'normal':     {label:'通常 (NORMAL)',         color:'var(--border2)',  items:l1.filter(i=>i._label==='normal')},
+  };
+  const total = l1.length;
+
+  // reason breakdown
+  const allFlags = l1.flatMap(i=>i._flags);
+  const flagCount = {};
+  allFlags.forEach(f=>{flagCount[f]=(flagCount[f]||0)+1;});
+
+  let h = `<div class="overview-section"><div class="overview-label">PRIORITY DISTRIBUTION (L1)</div>`;
+  Object.entries(groups).forEach(([key,g])=>{
+    const pct = total>0?(g.items.length/total*100).toFixed(0):0;
+    h+=`<div class="priority-stat-row" onclick="applyPriorityFilter('${key}')">
+      <div class="pstat-color" style="background:${g.color}"></div>
+      <span class="pstat-label">${g.label}</span>
+      <span class="pstat-count">${g.items.length}件</span>
+      <div class="pstat-bar-wrap"><div class="pstat-bar" style="width:${pct}%;background:${g.color}"></div></div>
+    </div>`;
+  });
+  h += `</div><div class="overview-section"><div class="overview-label">REASON BREAKDOWN</div>`;
+  const flagColors = {'大幅削減':'var(--red)','削減':'var(--red)','微減':'var(--red)',
+    '広報・イベント系':'var(--orange)','補助・交付系':'var(--cyan-dim)',
+    '増減ゼロ':'var(--text-dim)','小規模(<50M)':'var(--text-dim)'};
+  Object.entries(flagCount).sort((a,b)=>b[1]-a[1]).forEach(([f,c])=>{
+    h+=`<div class="reason-row">
+      <span class="reason-tag" style="background:rgba(255,255,255,.04);color:${flagColors[f]||'var(--text-dim)'};">${f}</span>
+      <span class="reason-count">${c}件</span>
+    </div>`;
+  });
+  h += `</div><div class="overview-section"><div class="overview-label">LOW-PRI TOP 10 (by budget)</div>`;
+  const lowItems = l1.filter(i=>i._label==='low'||i._label==='medium-low')
+    .sort((a,b)=>(b.budget?.fy7_million_yen||0)-(a.budget?.fy7_million_yen||0)).slice(0,10);
+  lowItems.forEach(i=>{
+    const col = i._label==='low'?'var(--red)':'var(--orange)';
+    h+=`<div class="new-item-row" onclick="selectBureau('${i.bureau}')">
+      <div class="new-item-bureau" style="color:${col}">${i.bureau}</div>
+      <div class="new-item-name">${i.name}</div>
+      <div style="font-family:var(--mono);font-size:9px;color:${col};margin-top:1px;">${i._flags.join(' / ')}</div>
+    </div>`;
+  });
+  return h+'</div>';
+}
+
+function buildNewHTML() {
+  const newItems = allItems.filter(i=>i.is_new&&i.budget)
+    .sort((a,b)=>(b.budget.fy7_million_yen||0)-(a.budget.fy7_million_yen||0)).slice(0,20);
+  let h = `<div class="overview-label">新規事業 TOP20 (by budget)</div>`;
+  newItems.forEach(i=>{
+    h+=`<div class="new-item-row" onclick="selectBureau('${i.bureau}')">
+      <div class="new-item-bureau">${i.bureau}</div>
+      <div class="new-item-name">${i.name}</div>
+      <div class="new-item-budget">¥${fmt(i.budget.fy7_million_yen)}M</div>
+    </div>`;
+  });
+  return h;
+}
+
+function applyPriorityFilter(label) {
+  currentBureau = null;
+  currentFilter = label;
+  document.querySelectorAll('.filter-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.filter===label);
+  });
+  document.getElementById('toolbar-bureau').textContent = `Priority: ${label.toUpperCase()}`;
+  searchQuery = '';
+  document.getElementById('search-input').value = '';
+  renderItems();
+}
+
+/* ── render items ── */
 function renderItems() {
   const container = document.getElementById('items-container');
-  let items = allItems.filter(i=>i.bureau===currentBureau);
+  let items = currentBureau ? allItems.filter(i=>i.bureau===currentBureau) : [...allItems];
 
-  // search filter
-  if(searchQuery) {
+  if (searchQuery) {
     const q = searchQuery.toLowerCase();
     items = allItems.filter(i=>
       i.name.toLowerCase().includes(q) ||
       i.bureau.toLowerCase().includes(q) ||
-      i.sub_items.some(s=>s.toLowerCase().includes(q))
+      (i.sub_items||[]).some(s=>s.toLowerCase().includes(q))
     );
     document.getElementById('toolbar-bureau').textContent = `検索: "${searchQuery}"`;
   }
 
-  // level/new filter
-  if(currentFilter==='new') items = items.filter(i=>i.is_new);
-  if(currentFilter==='l1') items = items.filter(i=>i.level===1);
+  // filter
+  if (currentFilter==='new')         items = items.filter(i=>i.is_new);
+  if (currentFilter==='l1')          items = items.filter(i=>i.level===1);
+  if (currentFilter==='low')         items = items.filter(i=>i._label==='low');
+  if (currentFilter==='medium-low')  items = items.filter(i=>i._label==='medium-low');
+  if (currentFilter==='medium')      items = items.filter(i=>i._label==='medium');
 
   // sort
-  if(sortMode==='budget-desc') items = [...items].sort((a,b)=>(b.budget?.fy7_million_yen||0)-(a.budget?.fy7_million_yen||0));
-  if(sortMode==='budget-asc') items = [...items].sort((a,b)=>(a.budget?.fy7_million_yen||0)-(b.budget?.fy7_million_yen||0));
-  if(sortMode==='diff-desc') items = [...items].sort((a,b)=>(b.budget?.diff_million_yen||0)-(a.budget?.diff_million_yen||0));
-  if(sortMode==='diff-asc') items = [...items].sort((a,b)=>(a.budget?.diff_million_yen||0)-(b.budget?.diff_million_yen||0));
+  if (sortMode==='priority-asc')  items = [...items].sort((a,b)=>b._score-a._score);
+  if (sortMode==='priority-desc') items = [...items].sort((a,b)=>a._score-b._score);
+  if (sortMode==='budget-desc')   items = [...items].sort((a,b)=>(b.budget?.fy7_million_yen||0)-(a.budget?.fy7_million_yen||0));
+  if (sortMode==='budget-asc')    items = [...items].sort((a,b)=>(a.budget?.fy7_million_yen||0)-(b.budget?.fy7_million_yen||0));
+  if (sortMode==='diff-asc')      items = [...items].sort((a,b)=>(a.budget?.diff_million_yen||0)-(b.budget?.diff_million_yen||0));
+  if (sortMode==='diff-desc')     items = [...items].sort((a,b)=>(b.budget?.diff_million_yen||0)-(a.budget?.diff_million_yen||0));
 
   document.getElementById('toolbar-count').textContent = `${items.length} items`;
+  if (!items.length) { container.innerHTML='<div class="empty-state">NO DATA FOUND</div>'; return; }
 
-  if(items.length===0) {
-    container.innerHTML = '<div class="empty-state">NO DATA FOUND</div>';
-    return;
-  }
-
-  // max budget for bar
-  const maxBudget = Math.max(...items.filter(i=>i.budget).map(i=>i.budget.fy7_million_yen||0),1);
-
+  const maxB = Math.max(...items.filter(i=>i.budget).map(i=>i.budget.fy7_million_yen||0), 1);
   container.innerHTML = '';
-  items.forEach((item, idx) => {
-    const card = buildCard(item, maxBudget, idx);
-    container.appendChild(card);
-  });
+  items.forEach((item, idx) => { container.appendChild(buildCard(item, maxB, idx)); });
 }
 
 function buildCard(item, maxBudget, idx) {
   const div = document.createElement('div');
-  div.className = `item-card level-${item.level}${item.is_new?' is-new':''}`;
-  div.style.animationDelay = `${Math.min(idx*15,200)}ms`;
+  const priorityCls = item.level===1 && item._label!=='normal' ? ` priority-${item._label}` : '';
+  div.className = `item-card level-${item.level}${item.is_new?' is-new':''}${priorityCls}`;
+  div.style.animationDelay = `${Math.min(idx*12,200)}ms`;
 
   const b = item.budget;
-  const fy7 = b?.fy7_million_yen ?? null;
-  const fy6 = b?.fy6_million_yen ?? null;
+  const fy7  = b?.fy7_million_yen ?? null;
+  const fy6  = b?.fy6_million_yen ?? null;
   const diff = b?.diff_million_yen ?? null;
-  const pct = fy7 != null && maxBudget > 0 ? (fy7/maxBudget*100).toFixed(1) : 0;
-  const diffClass = diff == null ? 'zero' : diff > 0 ? 'positive' : diff < 0 ? 'negative' : 'zero';
-  const diffStr = diff == null ? '—' : diff > 0 ? `▲${fmt(diff)}` : diff < 0 ? `▼${fmt(Math.abs(diff))}` : '±0';
+  const pct  = fy7!=null&&maxBudget>0 ? (fy7/maxBudget*100).toFixed(1) : 0;
+  const dc   = diff==null?'zero':diff>0?'positive':diff<0?'negative':'zero';
+  const ds   = diff==null?'—':diff>0?`▲${fmt(diff)}`:diff<0?`▼${fmt(Math.abs(diff))}`: '±0';
 
-  const hasContent = (b != null) || item.supplementary.length || item.sub_items.length || item.notes;
-  
+  const hasContent = b || item.supplementary?.length || item.sub_items?.length || item.notes || item._flags?.length;
+
+  // priority badge
+  let pbHTML = '';
+  if (item.level===1 && item._label!=='normal') {
+    const pbLabels = {'low':'LOW PRI','medium-low':'MED-LOW','medium':'MEDIUM'};
+    const pbCls    = {'low':'pb-low','medium-low':'pb-medium-low','medium':'pb-medium'};
+    pbHTML = `<span class="priority-badge ${pbCls[item._label]}">${pbLabels[item._label]}</span>`;
+  }
+
   div.innerHTML = `
     <div class="card-header" onclick="toggleCard(this)">
       <span class="level-badge">${item.number_label}</span>
       ${item.is_new ? '<span class="new-badge">NEW</span>' : ''}
+      ${pbHTML}
       <span class="item-name">${item.name}</span>
       <div class="budget-section">
-        ${fy7 != null
-          ? `<span class="budget-val">¥${fmt(fy7)}M</span>`
-          : `<span class="budget-val no-budget">—</span>`}
-        <span class="diff-badge ${diffClass}">${diffStr}</span>
+        ${fy7!=null ? `<span class="budget-val">¥${fmt(fy7)}M</span>` : `<span class="budget-val no-budget">—</span>`}
+        <span class="diff-badge ${dc}">${ds}</span>
       </div>
-      ${hasContent ? `<span class="expand-btn">▶</span>` : '<span style="width:16px"></span>'}
+      ${hasContent ? `<span class="expand-btn">▶</span>` : '<span style="width:14px"></span>'}
     </div>
     <div class="card-body">
+      ${(item._flags?.length && item.level===1) ? `
+        <div class="priority-explain">
+          <span class="priority-explain-label">LOW-PRI REASON:</span>
+          ${item._flags.map(f=>`<span class="flag-chip ${f}">${f}</span>`).join('')}
+        </div>` : ''}
       ${b ? `
         <div class="budget-bar-wrap">
           <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:${pct}%"></div></div>
           <span class="budget-bar-label">${pct}%</span>
         </div>
         <div class="budget-grid">
-          <div class="budget-cell">
-            <div class="budget-cell-label">R7年度</div>
-            <div class="budget-cell-val">${fmt(fy7)}<span class="budget-cell-unit">百万円</span></div>
-          </div>
-          <div class="budget-cell">
-            <div class="budget-cell-label">R6年度</div>
-            <div class="budget-cell-val">${fmt(fy6)}<span class="budget-cell-unit">百万円</span></div>
-          </div>
-          <div class="budget-cell">
-            <div class="budget-cell-label">増(△)減</div>
-            <div class="budget-cell-val ${diff>0?'diff-pos':diff<0?'diff-neg':''}">${diffStr}<span class="budget-cell-unit">百万円</span></div>
-          </div>
+          <div class="budget-cell"><div class="budget-cell-label">R7年度</div><div class="budget-cell-val">${fmt(fy7)}<span class="budget-cell-unit">百万円</span></div></div>
+          <div class="budget-cell"><div class="budget-cell-label">R6年度</div><div class="budget-cell-val">${fmt(fy6)}<span class="budget-cell-unit">百万円</span></div></div>
+          <div class="budget-cell"><div class="budget-cell-label">増(△)減</div><div class="budget-cell-val ${diff>0?'diff-pos':diff<0?'diff-neg':''}">${ds}<span class="budget-cell-unit">百万円</span></div></div>
         </div>` : ''}
-      ${item.supplementary.length ? `
+      ${item.supplementary?.length ? `
         <div class="suppl-section">
           <div class="suppl-label">SUPPLEMENTARY</div>
           ${item.supplementary.map(s=>`
             <div class="suppl-row">
               <span class="suppl-type">${s.type}</span>
-              ${s.raw
-                ? `<span class="suppl-raw">${s.raw}</span>`
-                : `<span class="suppl-nums">
-                    <span>R7: ${fmt(s.fy7)}</span>
-                    <span>R6: ${fmt(s.fy6)}</span>
-                    <span class="${s.diff>0?'diff-pos':s.diff<0?'diff-neg':''}">△: ${fmt(s.diff)}</span>
-                    <span style="color:var(--text-dim)">${s.unit||''}</span>
-                  </span>`}
+              ${s.raw ? `<span class="suppl-raw">${s.raw}</span>`
+                      : `<span class="suppl-nums">
+                          <span>R7:${fmt(s.fy7)}</span><span>R6:${fmt(s.fy6)}</span>
+                          <span class="${(s.diff||0)>0?'diff-pos':(s.diff||0)<0?'diff-neg':''}">Δ:${fmt(s.diff)}</span>
+                          <span style="color:var(--text-dim)">${s.unit||''}</span>
+                        </span>`}
             </div>`).join('')}
         </div>` : ''}
-      ${item.sub_items.length ? `
+      ${item.sub_items?.length ? `
         <div class="sub-items-section">
           <div class="sub-items-label">PROJECTS (${item.sub_items.length})</div>
-          <div class="sub-items-grid">
-            ${item.sub_items.map(s=>`<span class="sub-item-chip">${s}</span>`).join('')}
-          </div>
+          <div class="sub-items-grid">${item.sub_items.map(s=>`<span class="sub-item-chip">${s}</span>`).join('')}</div>
         </div>` : ''}
-      ${item.notes ? `
-        <div class="notes-section">${item.notes}</div>` : ''}
+      ${item.notes ? `<div class="notes-section">${item.notes}</div>` : ''}
     </div>`;
-
   return div;
 }
 
 function toggleCard(header) {
   const body = header.nextElementSibling;
-  const btn = header.querySelector('.expand-btn');
-  if(!body || !body.classList.contains('card-body')) return;
+  const btn  = header.querySelector('.expand-btn');
+  if (!body?.classList.contains('card-body')) return;
   const open = body.classList.toggle('open');
-  if(btn) btn.classList.toggle('open', open);
+  if (btn) btn.classList.toggle('open', open);
 }
 
-// ===== FILTERS =====
+/* ── filters & sort ── */
 document.querySelectorAll('.filter-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
+    if (currentBureau) {
+      document.getElementById('toolbar-bureau').textContent = currentBureau;
+    }
     renderItems();
   });
 });
+document.getElementById('sort-select').addEventListener('change', e=>{ sortMode=e.target.value; renderItems(); });
 
-document.getElementById('sort-select').addEventListener('change', e=>{
-  sortMode = e.target.value;
-  renderItems();
-});
-
-// ===== SEARCH =====
 let searchTimer;
 document.getElementById('search-input').addEventListener('input', e=>{
   clearTimeout(searchTimer);
   searchTimer = setTimeout(()=>{
     searchQuery = e.target.value.trim();
-    if(searchQuery) {
-      currentBureau = null;
-      document.querySelectorAll('.bureau-item').forEach(el=>el.classList.remove('active'));
-    } else {
-      // restore
-      if(!currentBureau) {
-        const first = allItems[0]?.bureau;
-        if(first) selectBureau(first);
-        return;
-      }
+    if (!searchQuery && currentBureau) {
+      document.getElementById('toolbar-bureau').textContent = currentBureau;
+    } else if (!searchQuery) {
+      const first = allItems[0]?.bureau;
+      if (first) { selectBureau(first); return; }
     }
     renderItems();
   }, 200);
 });
 
-// ===== START =====
 loadData();
 </script>
 </body>
